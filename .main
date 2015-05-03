@@ -197,14 +197,7 @@ void calcula_custo(float preco[DIM][DIM],string cidade[DIM],string cidade_inicia
                                                         }
 
                                                         if(aux_custo_total<custo_total){
-                                                        if((verifica(ind))==true){
-
-                                                            for(int p=0;p<DIM;p++){
-                                                                cout << ind[p] << " - ";
-                                                            }
-
-                                                            cout << aux_custo_total << " - " << custo_total << endl;
-
+                                                        if((verifica(ind))==true{
 
                                                             if(aux_custo_total<custo_total){
                                                                 custo_total=aux_custo_total;
@@ -430,14 +423,7 @@ void calcula_distancia (int preco[DIM][DIM],string cidade[DIM],string cidade_ini
 
                                                         if(aux_custo_total<custo_total){
                                                         if((verifica(ind))==true){
-
-                                                            for(int p=0;p<DIM;p++){
-                                                                cout << ind[p] << " - ";
-                                                            }
-
-                                                            cout << aux_custo_total << " - " << custo_total << endl;
-
-
+                                                        
                                                             if(aux_custo_total<custo_total){
                                                                 custo_total=aux_custo_total;
                                                                 for(int i=0;i<DIM;i++){
@@ -659,14 +645,7 @@ void calcula_tempo (int preco[DIM][DIM],string cidade[DIM],string cidade_inicial
 
                                                         if(aux_custo_total<custo_total){
                                                         if((verifica(ind))==true){
-
-                                                            for(int p=0;p<DIM;p++){
-                                                                cout << ind[p] << " - ";
-                                                            }
-
-                                                            cout << aux_custo_total << " - " << custo_total << endl;
-
-
+                                                        
                                                             if(aux_custo_total<custo_total){
                                                                 custo_total=aux_custo_total;
                                                                 for(int i=0;i<DIM;i++){
