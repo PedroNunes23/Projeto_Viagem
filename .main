@@ -1,0 +1,797 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+const int DIM =15;
+
+bool verifica(int ordem_viagem[DIM]){
+    for(int i=0;i<DIM-1;i++) {
+        for(int j=i+1;j<DIM;j++){
+         if(ordem_viagem[i]==ordem_viagem[j]){
+             return false;
+            }
+        }
+    }
+    return true;
+}
+
+void calcula_custo(float preco[DIM][DIM],string cidade[DIM],string cidade_inicial, string cidade_final) {
+    int ind_ini, ind_fin;
+    int ordem_viagem[DIM];
+
+    for(int p=0;p<DIM;p++) {
+        if (cidade_inicial==cidade[p]) ind_ini=p;
+        if (cidade_final==cidade[p]) ind_fin=p;
+    }
+
+    int ind[DIM];
+
+    float custo_total=999999999;
+    float aux_custo_total;
+
+    float custo[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+
+    int n=DIM;
+
+    ind[0]=ind_ini;
+    ind [14]=ind_fin;
+
+    for (ind[1]=0; ind[1]<n; ind[1]++)
+    {
+        if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+        else custo[0]=preco[ind[0]][ind[1]];
+        while(((custo[0]>custo_total)||(ind[1]==ind[0])||(ind[1]==ind[14]))&&((ind[1]+1)<n)){ ind[1]++;
+            if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+            else custo[0]=preco[ind[0]][ind[1]];
+        }
+        if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+        else custo[0]=preco[ind[0]][ind[1]];
+
+        for (ind[2]=0; ind[2]<n; ind[2]++)
+        {
+            if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+            else custo[1]=preco[ind[1]][ind[2]];
+            while(((custo[1]>custo_total)||(ind[2]==ind[0])||(ind[2]==ind[14])||(ind[2]==ind[1]))&&((ind[2]+1)<n)) {ind[2]++;
+                if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+                else custo[1]=preco[ind[1]][ind[2]];
+            }
+            if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+            else custo[1]=preco[ind[1]][ind[2]];
+
+            for (ind[3]=0; ind[3]<n;ind[3]++)
+            {
+                if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                else custo[2]=preco[ind[2]][ind[3]];
+                while(((custo[2]>custo_total)||(ind[3]==ind[0])||(ind[3]==ind[14])||(ind[3]==ind[1])||(ind[3]==ind[2]))&&((ind[3]+1)<n)) {ind[3]++;
+                    if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                    else custo[2]=preco[ind[2]][ind[3]];
+                }
+                if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                else custo[2]=preco[ind[2]][ind[3]];
+
+                for (ind[4]=0; ind[4]<n;ind[4]++)
+                {
+                    if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                    else custo[3]=preco[ind[3]][ind[4]];
+                    while(((custo[3]>custo_total)||(ind[4]==ind[0])||(ind[4]==ind[14])||(ind[4]==ind[1])||(ind[4]==ind[2])||(ind[4]==ind[3]))&&((ind[4]+1)<n)) {ind[4]++;
+                        if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                        else custo[3]=preco[ind[3]][ind[4]];
+                    }
+                    if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                    else custo[3]=preco[ind[3]][ind[4]];
+
+                    for (ind[5]=0; ind[5]<n;ind[5]++)
+                    {
+                        if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                        else custo[4]=preco[ind[4]][ind[5]];
+                        while(((custo[4]>custo_total)||(ind[5]==ind[0])||(ind[5]==ind[14])||(ind[5]==ind[1])||(ind[5]==ind[2])||(ind[5]==ind[3])||(ind[5]==ind[4]))&&((ind[5]+1)<n)) {ind[5]++;
+                            if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                            else custo[4]=preco[ind[4]][ind[5]];
+                        }
+                        if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                        else custo[4]=preco[ind[4]][ind[5]];
+
+                        for (ind[6]=0; ind[6]<n;ind[6]++)
+                        {
+                            if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                            else custo[5]=preco[ind[5]][ind[6]];
+                            while(((custo[5]>custo_total)||(ind[6]==ind[0])||(ind[6]==ind[14])||(ind[6]==ind[1])||(ind[6]==ind[2])||(ind[6]==ind[3])||(ind[6]==ind[4])||(ind[6]==ind[5]))&&((ind[6]+1)<n)) {ind[6]++;
+                                if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                                else custo[5]=preco[ind[5]][ind[6]];
+                            }
+                            if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                            else custo[5]=preco[ind[5]][ind[6]];
+
+                            for (ind[7]=0; ind[7]<n;ind[7]++)
+                            {
+                                if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                else custo[6]=preco[ind[6]][ind[7]];
+                                while(((custo[6]>custo_total)||(ind[7]==ind[0])||(ind[7]==ind[14])||(ind[7]==ind[1])||(ind[7]==ind[2])||(ind[7]==ind[3])||(ind[7]==ind[4])||(ind[7]==ind[5])||(ind[7]==ind[6]))&&((ind[7]+1)<n)) {ind[7]++;
+                                    if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                    else custo[6]=preco[ind[6]][ind[7]];
+                                }
+                                if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                else custo[6]=preco[ind[6]][ind[7]];
+
+                                for (ind[8]=0; ind[8]<n;ind[8]++)
+                                {
+                                    if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                    else custo[7]=preco[ind[7]][ind[8]];
+                                    while(((custo[7]>custo_total)||(ind[8]==ind[0])||(ind[8]==ind[14])||(ind[8]==ind[1])||(ind[8]==ind[2])||(ind[8]==ind[3])||(ind[8]==ind[4])||(ind[8]==ind[5])||(ind[8]==ind[6])||(ind[8]==ind[7]))&&((ind[8]+1)<n)) {ind[8]++;
+                                        if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                        else custo[7]=preco[ind[7]][ind[8]];
+                                    }
+                                    if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                    else custo[7]=preco[ind[7]][ind[8]];
+
+                                    for (ind[9]=0; ind[9]<n;ind[9]++)
+                                    {
+                                        if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                        else custo[8]=preco[ind[8]][ind[9]];
+                                        while(((custo[8]>custo_total)||(ind[9]==ind[0])||(ind[9]==ind[14])||(ind[9]==ind[1])||(ind[9]==ind[2])||(ind[9]==ind[3])||(ind[9]==ind[4])||(ind[9]==ind[5])||(ind[9]==ind[6])||(ind[9]==ind[7])||(ind[9]==ind[8]))&&((ind[9]+1)<n)) {ind[9]++;
+                                            if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                            else custo[8]=preco[ind[8]][ind[9]];
+                                        }
+                                        if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                        else custo[8]=preco[ind[8]][ind[9]];
+
+                                        for (ind[10]=0; ind[10]<n;ind[10]++)
+                                        {
+                                            if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                            else custo[9]=preco[ind[9]][ind[10]];
+                                            while(((custo[9]>custo_total)||(ind[10]==ind[0])||(ind[10]==ind[14])||(ind[10]==ind[1])||(ind[10]==ind[2])||(ind[10]==ind[3])||(ind[10]==ind[4])||(ind[10]==ind[5])||(ind[10]==ind[6])||(ind[10]==ind[7])||(ind[10]==ind[8])||(ind[10]==ind[9]))&&((ind[10]+1)<n)) {ind[10]++;
+                                                if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                                else custo[9]=preco[ind[9]][ind[10]];
+                                            }
+                                            if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                            else custo[9]=preco[ind[9]][ind[10]];
+
+                                            for (ind[11]=0; ind[11]<n;ind[11]++)
+                                            {
+                                                if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                else custo[10]=preco[ind[10]][ind[11]];
+                                                while(((custo[10]>custo_total)||(ind[11]==ind[0])||(ind[11]==ind[14])||(ind[11]==ind[1])||(ind[11]==ind[2])||(ind[11]==ind[3])||(ind[11]==ind[4])||(ind[11]==ind[5])||(ind[11]==ind[6])||(ind[11]==ind[7])||(ind[11]==ind[8])||(ind[11]==ind[9])||(ind[11]==ind[10]))&&((ind[11]+1)<n)) {ind[11]++;
+                                                    if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                    else custo[10]=preco[ind[10]][ind[11]];
+                                                }
+                                                if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                else custo[10]=preco[ind[10]][ind[11]];
+
+                                                for (ind[12]=0; ind[12]<n;ind[12]++)
+                                                {
+                                                    if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                    else custo[11]=preco[ind[11]][ind[12]];
+                                                    while(((custo[11]>custo_total)||(ind[12]==ind[0])||(ind[12]==ind[14])||(ind[12]==ind[1])||(ind[12]==ind[2])||(ind[12]==ind[3])||(ind[12]==ind[4])||(ind[12]==ind[5])||(ind[12]==ind[6])||(ind[12]==ind[7])||(ind[12]==ind[8])||(ind[12]==ind[9])||(ind[12]==ind[10])||(ind[12]==ind[11]))&&((ind[12]+1)<n)) {ind[12]++;
+                                                        if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                        else custo[11]=preco[ind[11]][ind[12]];
+                                                    }
+                                                    if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                    else custo[11]=preco[ind[11]][ind[12]];
+
+                                                    for (ind[13]=0; ind[13]<n;ind[13]++)
+                                                    {
+                                                        if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                        else custo[12]=preco[ind[12]][ind[13]];
+                                                        while(((custo[12]>custo_total)||(ind[13]==ind[0])||(ind[13]==ind[14])||(ind[13]==ind[1])||(ind[13]==ind[2])||(ind[13]==ind[3])||(ind[13]==ind[4])||(ind[13]==ind[5])||(ind[13]==ind[6])||(ind[13]==ind[7])||(ind[13]==ind[8])||(ind[13]==ind[9])||(ind[13]==ind[10])||(ind[13]==ind[11])||(ind[13]==ind[12]))&&((ind[13]+1)<n)) {ind[13]++;
+                                                            if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                            else custo[12]=preco[ind[12]][ind[13]];
+                                                        }
+                                                        if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                        else custo[12]=preco[ind[12]][ind[13]];
+
+
+                                                        aux_custo_total=0;
+                                                        int i=0;
+                                                        int j=1;
+                                                        while(j<DIM){
+                                                            if (ind[i]>ind[j]){
+                                                                aux_custo_total=aux_custo_total+preco[ind[j]][ind[i]];
+                                                                i++;j++;
+                                                            }
+                                                            else {
+                                                                aux_custo_total=aux_custo_total+preco[ind[i]][ind[j]];
+                                                                i++;j++;
+                                                            }
+                                                        }
+
+                                                        if(aux_custo_total<custo_total){
+                                                        if((verifica(ind))==true){
+
+                                                            for(int p=0;p<DIM;p++){
+                                                                cout << ind[p] << " - ";
+                                                            }
+
+                                                            cout << aux_custo_total << " - " << custo_total << endl;
+
+
+                                                            if(aux_custo_total<custo_total){
+                                                                custo_total=aux_custo_total;
+                                                                for(int i=0;i<DIM;i++){
+                                                                    ordem_viagem[i]=ind[i];
+                                                                }
+                                                            }
+                                                        }
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+        }
+     }
+    cout << "A rota que tem menores custos começando em " << cidade_inicial << " e terminando em " << cidade_final << " segue o percurso: ";
+
+    cout << cidade_inicial;
+    for(int i=1;i<DIM;i++){
+        int a=ordem_viagem[i];
+        cout <<" - "<< cidade[a];
+    }
+    cout << " gastando um total de " << custo_total << " €" << endl << endl;
+
+return;
+}
+
+void calcula_distancia (int preco[DIM][DIM],string cidade[DIM],string cidade_inicial, string cidade_final) {
+    int ind_ini, ind_fin;
+    int ordem_viagem[DIM];
+
+    for(int p=0;p<DIM;p++) {
+        if (cidade_inicial==cidade[p]) ind_ini=p;
+        if (cidade_final==cidade[p]) ind_fin=p;
+    }
+
+    int ind[DIM];
+
+    int custo_total=999999999;
+    int aux_custo_total;
+
+    int custo[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+
+    int n=DIM;
+
+    ind[0]=ind_ini;
+    ind [14]=ind_fin;
+
+    for (ind[1]=0; ind[1]<n; ind[1]++)
+    {
+        if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+        else custo[0]=preco[ind[0]][ind[1]];
+        while(((custo[0]>custo_total)||(ind[1]==ind[0])||(ind[1]==ind[14]))&&((ind[1]+1)<n)){ ind[1]++;
+            if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+            else custo[0]=preco[ind[0]][ind[1]];
+        }
+        if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+        else custo[0]=preco[ind[0]][ind[1]];
+
+        for (ind[2]=0; ind[2]<n; ind[2]++)
+        {
+            if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+            else custo[1]=preco[ind[1]][ind[2]];
+            while(((custo[1]>custo_total)||(ind[2]==ind[0])||(ind[2]==ind[14])||(ind[2]==ind[1]))&&((ind[2]+1)<n)) {ind[2]++;
+                if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+                else custo[1]=preco[ind[1]][ind[2]];
+            }
+            if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+            else custo[1]=preco[ind[1]][ind[2]];
+
+            for (ind[3]=0; ind[3]<n;ind[3]++)
+            {
+                if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                else custo[2]=preco[ind[2]][ind[3]];
+                while(((custo[2]>custo_total)||(ind[3]==ind[0])||(ind[3]==ind[14])||(ind[3]==ind[1])||(ind[3]==ind[2]))&&((ind[3]+1)<n)) {ind[3]++;
+                    if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                    else custo[2]=preco[ind[2]][ind[3]];
+                }
+                if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                else custo[2]=preco[ind[2]][ind[3]];
+
+                for (ind[4]=0; ind[4]<n;ind[4]++)
+                {
+                    if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                    else custo[3]=preco[ind[3]][ind[4]];
+                    while(((custo[3]>custo_total)||(ind[4]==ind[0])||(ind[4]==ind[14])||(ind[4]==ind[1])||(ind[4]==ind[2])||(ind[4]==ind[3]))&&((ind[4]+1)<n)) {ind[4]++;
+                        if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                        else custo[3]=preco[ind[3]][ind[4]];
+                    }
+                    if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                    else custo[3]=preco[ind[3]][ind[4]];
+
+                    for (ind[5]=0; ind[5]<n;ind[5]++)
+                    {
+                        if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                        else custo[4]=preco[ind[4]][ind[5]];
+                        while(((custo[4]>custo_total)||(ind[5]==ind[0])||(ind[5]==ind[14])||(ind[5]==ind[1])||(ind[5]==ind[2])||(ind[5]==ind[3])||(ind[5]==ind[4]))&&((ind[5]+1)<n)) {ind[5]++;
+                            if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                            else custo[4]=preco[ind[4]][ind[5]];
+                        }
+                        if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                        else custo[4]=preco[ind[4]][ind[5]];
+
+                        for (ind[6]=0; ind[6]<n;ind[6]++)
+                        {
+                            if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                            else custo[5]=preco[ind[5]][ind[6]];
+                            while(((custo[5]>custo_total)||(ind[6]==ind[0])||(ind[6]==ind[14])||(ind[6]==ind[1])||(ind[6]==ind[2])||(ind[6]==ind[3])||(ind[6]==ind[4])||(ind[6]==ind[5]))&&((ind[6]+1)<n)) {ind[6]++;
+                                if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                                else custo[5]=preco[ind[5]][ind[6]];
+                            }
+                            if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                            else custo[5]=preco[ind[5]][ind[6]];
+
+                            for (ind[7]=0; ind[7]<n;ind[7]++)
+                            {
+                                if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                else custo[6]=preco[ind[6]][ind[7]];
+                                while(((custo[6]>custo_total)||(ind[7]==ind[0])||(ind[7]==ind[14])||(ind[7]==ind[1])||(ind[7]==ind[2])||(ind[7]==ind[3])||(ind[7]==ind[4])||(ind[7]==ind[5])||(ind[7]==ind[6]))&&((ind[7]+1)<n)) {ind[7]++;
+                                    if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                    else custo[6]=preco[ind[6]][ind[7]];
+                                }
+                                if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                else custo[6]=preco[ind[6]][ind[7]];
+
+                                for (ind[8]=0; ind[8]<n;ind[8]++)
+                                {
+                                    if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                    else custo[7]=preco[ind[7]][ind[8]];
+                                    while(((custo[7]>custo_total)||(ind[8]==ind[0])||(ind[8]==ind[14])||(ind[8]==ind[1])||(ind[8]==ind[2])||(ind[8]==ind[3])||(ind[8]==ind[4])||(ind[8]==ind[5])||(ind[8]==ind[6])||(ind[8]==ind[7]))&&((ind[8]+1)<n)) {ind[8]++;
+                                        if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                        else custo[7]=preco[ind[7]][ind[8]];
+                                    }
+                                    if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                    else custo[7]=preco[ind[7]][ind[8]];
+
+                                    for (ind[9]=0; ind[9]<n;ind[9]++)
+                                    {
+                                        if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                        else custo[8]=preco[ind[8]][ind[9]];
+                                        while(((custo[8]>custo_total)||(ind[9]==ind[0])||(ind[9]==ind[14])||(ind[9]==ind[1])||(ind[9]==ind[2])||(ind[9]==ind[3])||(ind[9]==ind[4])||(ind[9]==ind[5])||(ind[9]==ind[6])||(ind[9]==ind[7])||(ind[9]==ind[8]))&&((ind[9]+1)<n)) {ind[9]++;
+                                            if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                            else custo[8]=preco[ind[8]][ind[9]];
+                                        }
+                                        if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                        else custo[8]=preco[ind[8]][ind[9]];
+
+                                        for (ind[10]=0; ind[10]<n;ind[10]++)
+                                        {
+                                            if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                            else custo[9]=preco[ind[9]][ind[10]];
+                                            while(((custo[9]>custo_total)||(ind[10]==ind[0])||(ind[10]==ind[14])||(ind[10]==ind[1])||(ind[10]==ind[2])||(ind[10]==ind[3])||(ind[10]==ind[4])||(ind[10]==ind[5])||(ind[10]==ind[6])||(ind[10]==ind[7])||(ind[10]==ind[8])||(ind[10]==ind[9]))&&((ind[10]+1)<n)) {ind[10]++;
+                                                if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                                else custo[9]=preco[ind[9]][ind[10]];
+                                            }
+                                            if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                            else custo[9]=preco[ind[9]][ind[10]];
+
+                                            for (ind[11]=0; ind[11]<n;ind[11]++)
+                                            {
+                                                if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                else custo[10]=preco[ind[10]][ind[11]];
+                                                while(((custo[10]>custo_total)||(ind[11]==ind[0])||(ind[11]==ind[14])||(ind[11]==ind[1])||(ind[11]==ind[2])||(ind[11]==ind[3])||(ind[11]==ind[4])||(ind[11]==ind[5])||(ind[11]==ind[6])||(ind[11]==ind[7])||(ind[11]==ind[8])||(ind[11]==ind[9])||(ind[11]==ind[10]))&&((ind[11]+1)<n)) {ind[11]++;
+                                                    if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                    else custo[10]=preco[ind[10]][ind[11]];
+                                                }
+                                                if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                else custo[10]=preco[ind[10]][ind[11]];
+
+                                                for (ind[12]=0; ind[12]<n;ind[12]++)
+                                                {
+                                                    if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                    else custo[11]=preco[ind[11]][ind[12]];
+                                                    while(((custo[11]>custo_total)||(ind[12]==ind[0])||(ind[12]==ind[14])||(ind[12]==ind[1])||(ind[12]==ind[2])||(ind[12]==ind[3])||(ind[12]==ind[4])||(ind[12]==ind[5])||(ind[12]==ind[6])||(ind[12]==ind[7])||(ind[12]==ind[8])||(ind[12]==ind[9])||(ind[12]==ind[10])||(ind[12]==ind[11]))&&((ind[12]+1)<n)) {ind[12]++;
+                                                        if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                        else custo[11]=preco[ind[11]][ind[12]];
+                                                    }
+                                                    if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                    else custo[11]=preco[ind[11]][ind[12]];
+
+                                                    for (ind[13]=0; ind[13]<n;ind[13]++)
+                                                    {
+                                                        if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                        else custo[12]=preco[ind[12]][ind[13]];
+                                                        while(((custo[12]>custo_total)||(ind[13]==ind[0])||(ind[13]==ind[14])||(ind[13]==ind[1])||(ind[13]==ind[2])||(ind[13]==ind[3])||(ind[13]==ind[4])||(ind[13]==ind[5])||(ind[13]==ind[6])||(ind[13]==ind[7])||(ind[13]==ind[8])||(ind[13]==ind[9])||(ind[13]==ind[10])||(ind[13]==ind[11])||(ind[13]==ind[12]))&&((ind[13]+1)<n)) {ind[13]++;
+                                                            if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                            else custo[12]=preco[ind[12]][ind[13]];
+                                                        }
+                                                        if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                        else custo[12]=preco[ind[12]][ind[13]];
+
+
+                                                        aux_custo_total=0;
+                                                        int i=0;
+                                                        int j=1;
+                                                        while(j<DIM){
+                                                            if (ind[i]>ind[j]){
+                                                                aux_custo_total=aux_custo_total+preco[ind[j]][ind[i]];
+                                                                i++;j++;
+                                                            }
+                                                            else {
+                                                                aux_custo_total=aux_custo_total+preco[ind[i]][ind[j]];
+                                                                i++;j++;
+                                                            }
+                                                        }
+
+                                                        if(aux_custo_total<custo_total){
+                                                        if((verifica(ind))==true){
+
+                                                            for(int p=0;p<DIM;p++){
+                                                                cout << ind[p] << " - ";
+                                                            }
+
+                                                            cout << aux_custo_total << " - " << custo_total << endl;
+
+
+                                                            if(aux_custo_total<custo_total){
+                                                                custo_total=aux_custo_total;
+                                                                for(int i=0;i<DIM;i++){
+                                                                    ordem_viagem[i]=ind[i];
+                                                                }
+                                                            }
+                                                        }
+                                                        }
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+        }
+     }
+    cout << "A rota que percorre menos distância começando em " << cidade_inicial << " e terminando em " << cidade_final << " segue o percurso: ";
+
+    cout << cidade_inicial;
+    for(int i=1;i<DIM;i++){
+        int a=ordem_viagem[i];
+        cout <<" - "<< cidade[a];
+    }
+    cout << " percorrendo um total de " << custo_total << " km" << endl << endl;
+return;
+}
+void calcula_tempo (int preco[DIM][DIM],string cidade[DIM],string cidade_inicial, string cidade_final) {
+    int ind_ini, ind_fin;
+    int ordem_viagem[DIM];
+
+    for(int p=0;p<DIM;p++) {
+        if (cidade_inicial==cidade[p]) ind_ini=p;
+        if (cidade_final==cidade[p]) ind_fin=p;
+    }
+
+    int ind[DIM];
+
+    int custo_total=999999999;
+    int aux_custo_total;
+
+    int custo[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+
+    int n=DIM;
+
+    ind[0]=ind_ini;
+    ind [14]=ind_fin;
+
+    for (ind[1]=0; ind[1]<n; ind[1]++)
+    {
+        if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+        else custo[0]=preco[ind[0]][ind[1]];
+        while(((custo[0]>custo_total)||(ind[1]==ind[0])||(ind[1]==ind[14]))&&((ind[1]+1)<n)){ ind[1]++;
+            if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+            else custo[0]=preco[ind[0]][ind[1]];
+        }
+        if(ind[0]>ind[1]) custo[0]=preco[ind[1]][ind[0]];
+        else custo[0]=preco[ind[0]][ind[1]];
+
+        for (ind[2]=0; ind[2]<n; ind[2]++)
+        {
+            if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+            else custo[1]=preco[ind[1]][ind[2]];
+            while(((custo[1]>custo_total)||(ind[2]==ind[0])||(ind[2]==ind[14])||(ind[2]==ind[1]))&&((ind[2]+1)<n)) {ind[2]++;
+                if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+                else custo[1]=preco[ind[1]][ind[2]];
+            }
+            if(ind[1]>ind[2]) custo[1]=preco[ind[2]][ind[1]] + custo[0];
+            else custo[1]=preco[ind[1]][ind[2]];
+
+            for (ind[3]=0; ind[3]<n;ind[3]++)
+            {
+                if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                else custo[2]=preco[ind[2]][ind[3]];
+                while(((custo[2]>custo_total)||(ind[3]==ind[0])||(ind[3]==ind[14])||(ind[3]==ind[1])||(ind[3]==ind[2]))&&((ind[3]+1)<n)) {ind[3]++;
+                    if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                    else custo[2]=preco[ind[2]][ind[3]];
+                }
+                if(ind[2]>ind[3]) custo[2]=preco[ind[3]][ind[2]] + custo[1];
+                else custo[2]=preco[ind[2]][ind[3]];
+
+                for (ind[4]=0; ind[4]<n;ind[4]++)
+                {
+                    if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                    else custo[3]=preco[ind[3]][ind[4]];
+                    while(((custo[3]>custo_total)||(ind[4]==ind[0])||(ind[4]==ind[14])||(ind[4]==ind[1])||(ind[4]==ind[2])||(ind[4]==ind[3]))&&((ind[4]+1)<n)) {ind[4]++;
+                        if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                        else custo[3]=preco[ind[3]][ind[4]];
+                    }
+                    if(ind[3]>ind[4]) custo[3]=preco[ind[4]][ind[3]] + custo[2];
+                    else custo[3]=preco[ind[3]][ind[4]];
+
+                    for (ind[5]=0; ind[5]<n;ind[5]++)
+                    {
+                        if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                        else custo[4]=preco[ind[4]][ind[5]];
+                        while(((custo[4]>custo_total)||(ind[5]==ind[0])||(ind[5]==ind[14])||(ind[5]==ind[1])||(ind[5]==ind[2])||(ind[5]==ind[3])||(ind[5]==ind[4]))&&((ind[5]+1)<n)) {ind[5]++;
+                            if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                            else custo[4]=preco[ind[4]][ind[5]];
+                        }
+                        if(ind[4]>ind[5]) custo[4]=preco[ind[5]][ind[4]] + custo[3];
+                        else custo[4]=preco[ind[4]][ind[5]];
+
+                        for (ind[6]=0; ind[6]<n;ind[6]++)
+                        {
+                            if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                            else custo[5]=preco[ind[5]][ind[6]];
+                            while(((custo[5]>custo_total)||(ind[6]==ind[0])||(ind[6]==ind[14])||(ind[6]==ind[1])||(ind[6]==ind[2])||(ind[6]==ind[3])||(ind[6]==ind[4])||(ind[6]==ind[5]))&&((ind[6]+1)<n)) {ind[6]++;
+                                if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                                else custo[5]=preco[ind[5]][ind[6]];
+                            }
+                            if(ind[5]>ind[6]) custo[5]=preco[ind[6]][ind[5]] + custo[4];
+                            else custo[5]=preco[ind[5]][ind[6]];
+
+                            for (ind[7]=0; ind[7]<n;ind[7]++)
+                            {
+                                if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                else custo[6]=preco[ind[6]][ind[7]];
+                                while(((custo[6]>custo_total)||(ind[7]==ind[0])||(ind[7]==ind[14])||(ind[7]==ind[1])||(ind[7]==ind[2])||(ind[7]==ind[3])||(ind[7]==ind[4])||(ind[7]==ind[5])||(ind[7]==ind[6]))&&((ind[7]+1)<n)) {ind[7]++;
+                                    if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                    else custo[6]=preco[ind[6]][ind[7]];
+                                }
+                                if(ind[6]>ind[7]) custo[6]=preco[ind[7]][ind[6]] + custo[5];
+                                else custo[6]=preco[ind[6]][ind[7]];
+
+                                for (ind[8]=0; ind[8]<n;ind[8]++)
+                                {
+                                    if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                    else custo[7]=preco[ind[7]][ind[8]];
+                                    while(((custo[7]>custo_total)||(ind[8]==ind[0])||(ind[8]==ind[14])||(ind[8]==ind[1])||(ind[8]==ind[2])||(ind[8]==ind[3])||(ind[8]==ind[4])||(ind[8]==ind[5])||(ind[8]==ind[6])||(ind[8]==ind[7]))&&((ind[8]+1)<n)) {ind[8]++;
+                                        if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                        else custo[7]=preco[ind[7]][ind[8]];
+                                    }
+                                    if(ind[7]>ind[8]) custo[7]=preco[ind[8]][ind[7]] + custo[6];
+                                    else custo[7]=preco[ind[7]][ind[8]];
+
+                                    for (ind[9]=0; ind[9]<n;ind[9]++)
+                                    {
+                                        if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                        else custo[8]=preco[ind[8]][ind[9]];
+                                        while(((custo[8]>custo_total)||(ind[9]==ind[0])||(ind[9]==ind[14])||(ind[9]==ind[1])||(ind[9]==ind[2])||(ind[9]==ind[3])||(ind[9]==ind[4])||(ind[9]==ind[5])||(ind[9]==ind[6])||(ind[9]==ind[7])||(ind[9]==ind[8]))&&((ind[9]+1)<n)) {ind[9]++;
+                                            if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                            else custo[8]=preco[ind[8]][ind[9]];
+                                        }
+                                        if(ind[8]>ind[9]) custo[8]=preco[ind[9]][ind[8]] + custo[7];
+                                        else custo[8]=preco[ind[8]][ind[9]];
+
+                                        for (ind[10]=0; ind[10]<n;ind[10]++)
+                                        {
+                                            if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                            else custo[9]=preco[ind[9]][ind[10]];
+                                            while(((custo[9]>custo_total)||(ind[10]==ind[0])||(ind[10]==ind[14])||(ind[10]==ind[1])||(ind[10]==ind[2])||(ind[10]==ind[3])||(ind[10]==ind[4])||(ind[10]==ind[5])||(ind[10]==ind[6])||(ind[10]==ind[7])||(ind[10]==ind[8])||(ind[10]==ind[9]))&&((ind[10]+1)<n)) {ind[10]++;
+                                                if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                                else custo[9]=preco[ind[9]][ind[10]];
+                                            }
+                                            if(ind[9]>ind[10]) custo[9]=preco[ind[10]][ind[9]] + custo[8];
+                                            else custo[9]=preco[ind[9]][ind[10]];
+
+                                            for (ind[11]=0; ind[11]<n;ind[11]++)
+                                            {
+                                                if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                else custo[10]=preco[ind[10]][ind[11]];
+                                                while(((custo[10]>custo_total)||(ind[11]==ind[0])||(ind[11]==ind[14])||(ind[11]==ind[1])||(ind[11]==ind[2])||(ind[11]==ind[3])||(ind[11]==ind[4])||(ind[11]==ind[5])||(ind[11]==ind[6])||(ind[11]==ind[7])||(ind[11]==ind[8])||(ind[11]==ind[9])||(ind[11]==ind[10]))&&((ind[11]+1)<n)) {ind[11]++;
+                                                    if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                    else custo[10]=preco[ind[10]][ind[11]];
+                                                }
+                                                if(ind[10]>ind[11]) custo[10]=preco[ind[11]][ind[10]] + custo[9];
+                                                else custo[10]=preco[ind[10]][ind[11]];
+
+                                                for (ind[12]=0; ind[12]<n;ind[12]++)
+                                                {
+                                                    if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                    else custo[11]=preco[ind[11]][ind[12]];
+                                                    while(((custo[11]>custo_total)||(ind[12]==ind[0])||(ind[12]==ind[14])||(ind[12]==ind[1])||(ind[12]==ind[2])||(ind[12]==ind[3])||(ind[12]==ind[4])||(ind[12]==ind[5])||(ind[12]==ind[6])||(ind[12]==ind[7])||(ind[12]==ind[8])||(ind[12]==ind[9])||(ind[12]==ind[10])||(ind[12]==ind[11]))&&((ind[12]+1)<n)) {ind[12]++;
+                                                        if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                        else custo[11]=preco[ind[11]][ind[12]];
+                                                    }
+                                                    if(ind[11]>ind[12]) custo[11]=preco[ind[12]][ind[11]] + custo[10];
+                                                    else custo[11]=preco[ind[11]][ind[12]];
+
+                                                    for (ind[13]=0; ind[13]<n;ind[13]++)
+                                                    {
+                                                        if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                        else custo[12]=preco[ind[12]][ind[13]];
+                                                        while(((custo[12]>custo_total)||(ind[13]==ind[0])||(ind[13]==ind[14])||(ind[13]==ind[1])||(ind[13]==ind[2])||(ind[13]==ind[3])||(ind[13]==ind[4])||(ind[13]==ind[5])||(ind[13]==ind[6])||(ind[13]==ind[7])||(ind[13]==ind[8])||(ind[13]==ind[9])||(ind[13]==ind[10])||(ind[13]==ind[11])||(ind[13]==ind[12]))&&((ind[13]+1)<n)) {ind[13]++;
+                                                            if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                            else custo[12]=preco[ind[12]][ind[13]];
+                                                        }
+                                                        if(ind[12]>ind[13]) custo[12]=preco[ind[13]][ind[12]] + custo[11];
+                                                        else custo[12]=preco[ind[12]][ind[13]];
+
+
+                                                        aux_custo_total=0;
+                                                        int i=0;
+                                                        int j=1;
+                                                        while(j<DIM){
+                                                            if (ind[i]>ind[j]){
+                                                                aux_custo_total=aux_custo_total+preco[ind[j]][ind[i]];
+                                                                i++;j++;
+                                                            }
+                                                            else {
+                                                                aux_custo_total=aux_custo_total+preco[ind[i]][ind[j]];
+                                                                i++;j++;
+                                                            }
+                                                        }
+
+                                                        if(aux_custo_total<custo_total){
+                                                        if((verifica(ind))==true){
+
+                                                            for(int p=0;p<DIM;p++){
+                                                                cout << ind[p] << " - ";
+                                                            }
+
+                                                            cout << aux_custo_total << " - " << custo_total << endl;
+
+
+                                                            if(aux_custo_total<custo_total){
+                                                                custo_total=aux_custo_total;
+                                                                for(int i=0;i<DIM;i++){
+                                                                    ordem_viagem[i]=ind[i];
+                                                                }
+                                                            }
+
+                                                        }
+                                                        }
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+        }
+     }
+    cout << "A rota em que se gasta menos tempo começando em " << cidade_inicial << " e terminando em " << cidade_final << " segue o percurso: ";
+
+    cout << cidade_inicial;
+    for(int i=1;i<DIM;i++){
+        int a=ordem_viagem[i];
+        cout <<" - "<< cidade[a];
+    }
+    cout << " sendo este percurso percorrido em " << custo_total << " horas" << endl << endl;
+return;
+}
+
+
+
+int main()
+{
+
+    float tab_custo[DIM][DIM];
+    int tab_distancia[DIM][DIM];
+    int tab_tempo[DIM][DIM];
+
+    string cidade [DIM];
+
+    string cidade_inicial;
+    string cidade_final;
+
+////////////////////////////////////////////////////////////////////////
+
+    ifstream cost;
+    cost.open("/home/pedro/Documentos/Projeto_Viagem/cost.txt");
+
+    for(int a=0;a<DIM;a++) {
+        cost >> cidade[a];
+    }
+
+    for(int i=0;i<DIM;i++)
+    {
+        for(int j=0;j<(DIM-i);j++)
+        {
+            cost >> tab_custo[i][j+i];
+        }
+
+    }
+
+////////////////////////////////////////////////////////////////////////
+
+    ifstream distance;
+    distance.open("/home/pedro/Documentos/Projeto_Viagem/distance.txt");
+
+    for(int i=0;i<DIM;i++)
+    {
+        for(int j=0;j<(DIM-i);j++)
+        {
+            distance >> tab_distancia[i][j+i];
+        }
+
+    }
+////////////////////////////////////////////////////////////////////////
+    ifstream time;
+    time.open("/home/pedro/Documentos/Projeto_Viagem/time.txt");
+
+    for(int i=0;i<DIM;i++)
+    {
+        for(int j=0;j<(DIM-i);j++)
+        {
+            time >> tab_tempo[i][j+i];
+        }
+
+    }
+////////////////////////////////////////////////////////////////////////
+
+    for (int a=0;a<DIM;a++){
+        cout << cidade[a] << "  ";
+    }
+
+    cout << endl;
+    cout << "Introduza das cidades apresentadas acima a inicial: ";
+    cin >> cidade_inicial;
+
+    cout << "Introduza a ultima cidade a visitar: ";
+    cin >> cidade_final;
+
+////////////////////////////////////////////////////////////////////////
+
+    calcula_tempo(tab_tempo,cidade,cidade_inicial,cidade_final);
+    calcula_distancia(tab_distancia,cidade,cidade_inicial,cidade_final);
+    calcula_custo(tab_custo,cidade,cidade_inicial,cidade_final);
+////////////////////////////////////////////////////////////////////////
+
+    cost.close();
+
+    distance.close();
+
+    time.close();
+
+    return 0;
+
+}
